@@ -1,7 +1,7 @@
 % creates the figures in the structural estimation section
 
-clear, addpath('repo/functions/'), s = getParams;
-load('data/prelim'), load('data/structural')
+clear, addpath('functions/'), s = getParams;
+load('../data/prelim'), load('../data/structural')
 
 %% optimal bounds and objective function plots
 

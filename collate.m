@@ -2,14 +2,14 @@
 % 2) finds the optimal parameter values
 % 3) calculates standard errors for the variance terms
 
-clear, addpath('repo/functions/'), s = getParams; load('data/prelim')
+clear, addpath('functions/'), s = getParams; load('../data/prelim')
 
 %% compile estimates
 
 M = nan(s.N_eval,3); cov = nan(s.N_eval,3,2); 
 for j=1:3
     for t=1:s.N_eval
-        load(['data/model/',num2str(j),'_',num2str(t)])
+        load(['../data/model/',num2str(j),'_',num2str(t)])
         M(t,j) = L; cov(t,j,:) = cov_hat;
     end
 end
@@ -45,4 +45,4 @@ end
 
 %% save
 
-save('data/structural', 'S_hat', 'cov_hat', 'x', 'e', 'box')
+save('../data/structural', 'S_hat', 'cov_hat', 'x', 'e', 'box')

@@ -1,6 +1,6 @@
 % estimates priors and enforced strike zone
 
-clear, addpath('repo/functions/'), s = getParams; H = {struct,struct};
+clear, addpath('functions/'), s = getParams; H = {struct,struct};
 
 %% data
 
@@ -54,4 +54,4 @@ priors = {{[], []},{H{1}.RE, H{2}.RE},{H{1}.RE_S, H{2}.RE_S}};
 
 %% save
 
-save('data/prelim','H','priors')
+save('../data/prelim','H','priors')

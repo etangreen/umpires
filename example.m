@@ -1,12 +1,12 @@
 % creates the example graphs in the theory section
 
-clear, addpath('repo/functions/'), s = getParams; load('data/prelim')
+clear, addpath('functions/'), s = getParams; load('../data/prelim')
 
 %% data
 
-opts = detectImportOptions('data/pitches.csv');
+opts = detectImportOptions('../data/pitches.csv');
 opts = setvaropts(opts, 'count', 'Type', 'string');
-T = readtable('data/pitches.csv', opts);
+T = readtable('../data/pitches.csv', opts);
 
 y = T.take; X = [T.px T.pz_std];
 

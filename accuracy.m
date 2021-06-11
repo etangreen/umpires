@@ -1,6 +1,6 @@
 % estimates and plots changes in accuracy with different priors
 
-clear, addpath('repo/functions/'), s = getParams; load('data/prelim')
+clear, addpath('functions/'), s = getParams; load('../data/prelim')
 
 %% grid of points
 
