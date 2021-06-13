@@ -13,8 +13,8 @@ for j=1:3
             load(['../data/grid/',num2str(j), '_', num2str(i)])
             M(i,j) = L; cov(i,j,:) = cov_hat;
         catch
-            t = (j-1) * s.N_eval + i;
-            fprintf('Could not find %d.\n', t)
+            fprintf('Could not find %d: [%.2f, %.2f].\n', ...
+                j, s.evalPts(i, 1), s.evalPts(i, 2))
         end
     end
 end

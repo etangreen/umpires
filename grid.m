@@ -14,14 +14,14 @@ end
 
 t = str2double(getenv('SGE_TASK_ID')); 
 i = mod(t-1,s.N_eval)+1; S = s.evalPts(i,:); j = ceil(t/s.N_eval);
-path = [grid_dir, num2str(j), '_',num2str(i)];
+file_path = [grid_dir, num2str(j), '_',num2str(i)];
 
 fprintf('Prior %d: [%1.1f, %1.1f]\n',j,S(1),S(2))
 
-if exist(path, 'file')
+if exist([file_path, '.mat'], 'file')
     fprintf('Output file already exists\n')
     exit
-end 
+end
 
 %% preliminaries
 
@@ -40,4 +40,4 @@ L = w * loss(1) + (1-w) * loss(2);
 
 %% save
 
-save(path, 'L', 'cov_hat')
+save(file_path, 'L', 'cov_hat')
