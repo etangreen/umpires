@@ -1,8 +1,6 @@
-# Etan Green // June 2021
+Guide to replication files for *Bayesian Instinct*. 
 
-Guide to replication files for *Bayesian Instinct*. Note that `.m` files run on Matlab, `.do` files run on Stata.
-
-## FIRST:
+## First:
 1. Create a master directory (e.g., `umpires/`).
 2. Clone this repository in the master directory and call it `repo` (i.e., `umpires/repo/`).
 3. Download the data directory from XXX into the master directory.

@@ -50,8 +50,8 @@ d22 = abs(simulateCalls(priors{2}{2},signal,sim,Z) - Z);
 d31 = abs(simulateCalls(priors{3}{1},signal,sim,Z) - Z);
 d32 = abs(simulateCalls(priors{3}{2},signal,sim,Z) - Z);
 
-e2 = sum(H{1}.calls .* d21 + H{2}.calls .* d22) ./ N;
-e3 = sum(H{1}.calls .* d31 + H{2}.calls .* d32) ./ N;
+e2 = sum(H{1}.calls .* d21 + H{2}.calls .* d22);
+e3 = sum(H{1}.calls .* d31 + H{2}.calls .* d32);
 
 fprintf('%% decrease in error rate\n')
 for c=1:s.N_c

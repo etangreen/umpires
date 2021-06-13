@@ -1,8 +1,9 @@
-function [signal,sim] = simulateObs(S,cov)
+function [signal,sim] = simulateObs(S,cov,workers)
 % creates a signal distribution at every location on the grid and simulates
 % the umpire's observations
 %   S: 2-length vector of standard deviations
 %   cov: scalar covariance
+%   workers: number of workers
 
 s = getParams; vcmat = [S(1)^2 cov; cov S(2)^2];
 
@@ -17,7 +18,7 @@ rng(s.seed); draws = int8(round(mvnrnd([0 0],vcmat,s.N_sim)));
 %% loop over true locations
 
 signal = zeros(s.pts^2); sim = zeros(s.pts^2,s.N_sim,'uint16'); 
-for i=1:s.pts^2
+parfor (i=1:s.pts^2, workers)
     % signal distribution
     onGrid = min(abs(s.bigGrid + repmat(s.gridPts(i,:),[s.bigpts^2,1])) ...
         <= (s.pts-1)/2,[],2); 

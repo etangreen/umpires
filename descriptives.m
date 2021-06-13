@@ -62,7 +62,7 @@ for h=1:2
         [0 0],lines{3},'LineWidth',2)
     legend({'3-0','0-0','0-2'},'Interpreter','latex', ...
         'box','off','Location','NorthEast','FontSize',20);
-    saveFigure(['count_50',s.hands{h}],[],[],'zoom')
+    saveFigure(['enforced_',s.hands{h}],[],[],'zoom')
     
     % priors and enforced strike zone by year
     bw = [0 0];
@@ -83,46 +83,7 @@ for h=1:2
             [0 0],'-k','LineWidth',1.5)
     end
     saveFigure(['00',s.hands{h},'_year'],[],[],'zoom')
-
-    % priors and enforced strike zone by inning
-    bw = [0 0]; e = cell(3,1); e{1} = e0 & D{h}.inning <= 3;
-    e{3} = e0 & D{h}.inning >= 7; e{2} = e0 & ~e{1} & ~e{3}; 
-    for n=1:3
-        bw = max(bw,s.h(X{h}(e{n},:)));
-    end
-    
-    M = zeros(s.pts^2,3);
-    for n=1:3
-        drawDens(runDens(X{h}(e{n},:),bw),['CD',num2str(n),s.hands{h}])
-        M(:,n) = runSVM(y{h}(e{n}),X{h}(e{n},:));
-    end
-    
-    clf, hold on
-    for n=1:3
-        contour(s.dim,s.dim,reshape(M(:,n),[s.pts,s.pts]), ...
-            [0 0],lines{n},'LineWidth',1.5)
-    end
-    legend({'$\rm{i} \le 3\hspace{5mm}$','$4 \le \rm{i} \le 6\hspace{5mm}$','$\rm{i} \ge 7$'}, ...
-        'Interpreter','latex','Orientation','horizontal', ...
-        'box','off','Location','North','FontSize',20);
-    saveFigure(['00',s.hands{h},'_inning'],[],[],'zoom')
 end
-
-%% plot for SVM appendix
-
-e = strcmp(D{2}.count,'32'); p = runProb(y{2}(e),X{2}(e,:));
-e0 = e & ~D{2}.strike; e1 = e & D{2}.strike;
-
-clf, hold on
-plot(X{2}(e1,1),X{2}(e1,2),'xk','MarkerSize',5)
-plot(X{2}(e0,1),X{2}(e0,2),'.k','MarkerSize',5,'MarkerEdgeColor',[0.5 0.5 0.5])
-[~,c1] = contour(s.dim,s.dim,reshape(H{2}.enforced(:,12),[s.pts,s.pts]), ...
-    [0 0],'-k','LineWidth',2);
-[~,c2] = contour(s.dim,s.dim,reshape(p,[s.pts,s.pts]), ...
-    [0.5 0.5],'--k','LineWidth',2);
-legend([c1 c2],{'SVM','LL'},'Interpreter','latex', ...
-    'Location','NorthEast','FontSize',20)
-saveFigure('SVM_32L',[],[],'zoom')
 
 %% coefficient plots
 

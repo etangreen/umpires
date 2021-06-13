@@ -13,7 +13,7 @@ Z = round(X); sd = std(Z); Z = Z ./ sd;
 
 [U,~,ind] = unique([y Z],'rows'); c = grpstats(ind,ind,'numel');
 y = U(:,1); Z = U(:,2:end); X = Z .* sd;
-h = fminbnd(@(h) getMSE(h,c,y,Z),0,1,optimset('Display','iter')) * sd;
+h = fminbnd(@(h) getMSE(h,c,y,Z), 0, 1, optimset('Display','iter')) * sd;
 
 if nargin == 4
     Z2 = round(X2); sd2 = std(Z2); Z2 = Z2 ./ sd2;

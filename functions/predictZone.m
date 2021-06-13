@@ -1,7 +1,8 @@
-function [y_hat,score] = predictZone(p,C)
+function [y_hat,score] = predictZone(p,C,workers)
 % estimates predicted strike zone
 %   p: pts^2 x N_s matrix of simulated called strike rates
 %   C: scalar slack cost hyperparameter for SVM
+%   workers: number of workers
 
 s = getParams; N_b = size(p,3); X = double(s.gridPts);
 if size(p,2) == 1
@@ -12,7 +13,7 @@ end
 y_hat = zeros(s.pts^2,s.N_c,N_b,'logical'); 
 score = zeros(s.pts^2,s.N_c,N_b);
 for c=1:s.N_c
-    for b=1:N_b
+    parfor (b=1:N_b, workers)
         weights = [p(:,c,b); 1-p(:,c,b)];
         [y_hat(:,c,b),M] = predict(s.SVM(weights,C(c)), X);
         score(:,c,b) = M(:,2);
@@ -20,4 +21,3 @@ for c=1:s.N_c
 end
 
 end
-

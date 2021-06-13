@@ -5,7 +5,7 @@ clear, addpath('functions/'), s = getParams;
 
 %% create output directory, if necessary
 
-grid_dir = '../data/model/';
+grid_dir = '../data/grid/';
 if ~exist(grid_dir, 'dir')
     mkdir(grid_dir)
 end
@@ -33,7 +33,7 @@ opt = optimset('Display','iter','TolX',0.1);
 cov_hat = zeros(2,1); loss = zeros(2,1);
 for h=1:2
     prior = priors{j}{h}; hand = H{h}; Z = s.Z{h};
-    [cov_hat(h),loss(h)] = fminbnd(@(b) getLoss(S,b,prior,hand,Z,0), ...
+    [cov_hat(h),loss(h)] = fminbnd(@(b) getLoss(S,b,prior,hand,Z), ...
         (h == 1) * -prod(S),(h == 2) * prod(S),opt);
 end
 L = w * loss(1) + (1-w) * loss(2);
