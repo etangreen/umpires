@@ -84,6 +84,11 @@ import delim using data/calls.csv, ///
 
 do repo/functions/clean.do
 
+by balls strikes, sort: egen mean = mean(ai)
+by balls strikes, sort: egen sd = sd(ai)
+g ai_std = (ai - mean) / sd
+drop mean sd
+
 areg strike balls#strikes balls#strikes#c.ai_std, cl(umpid) a(fe)
 mat A = e(b)' , vecdiag(e(V))'
 

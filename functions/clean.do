@@ -1,7 +1,7 @@
 * boundaries of official strike zone
 
-local side = 8.5 / 12
-local top = 10.98 / 12
+local side = 8.5
+local top = 10.98
 local e = 3
 
 keep if (abs(abs(px) - `side') <= `e' ///
@@ -21,18 +21,4 @@ if _rc {
 	g byte balls = real(substr(count,1,1))
 	g byte strikes = real(substr(count,2,1))
 	drop count
-}
-
-capture confirm var on1
-if !_rc {
-	g byte b3on1 = balls == 3 & on1
-	g byte s2o2 = strikes == 2 & outs == 2
-}
-
-capture confirm var ai
-if !_rc {
-	by balls strikes, sort: egen mean = mean(ai)
-	by balls strikes, sort: egen sd = sd(ai)
-	g ai_std = (ai - mean) / sd
-	drop mean sd
 }

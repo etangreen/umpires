@@ -8,6 +8,12 @@ opts = detectImportOptions('../data/pitches.csv');
 opts = setvaropts(opts, 'count', 'Type', 'string');
 T = readtable('../data/pitches.csv', opts);
 
+%% restrict to right-handed batters
+
+T = T(T.batsR == 1, :);
+
+%% create variables
+
 y = T.take; X = [T.px T.pz_std];
 
 inzone = @(e) mean(abs(T.px(e)) <= s.edge1 & abs(T.pz_std(e)) <= s.edge2);

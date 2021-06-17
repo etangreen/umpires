@@ -5,7 +5,7 @@ clear, addpath('functions/'), s = getParams;
 
 %% create output directory, if necessary
 
-grid_dir = '../data/model/';
+grid_dir = '../data/grid/';
 if ~exist(grid_dir, 'dir')
     mkdir(grid_dir)
 end

@@ -14,27 +14,35 @@ clf, saveFigure('blank',[],[],'zoom')
 
 %% plots on full data
 
-y = T.strike; X = [T.px T.pz_std];
+T_R = T(T.batsR == 1, :); y = T_R.strike; X = [T_R.px T_R.pz_std];
 
 % gambler's fallacy
 counts = {'01','02','11'};
 for c=1:length(counts)
-    e1 = strcmp(T.count,counts{c}) & T.Lstrike; 
-    e2 = strcmp(T.count,counts{c}) & ~T.Lstrike;
+    e1 = strcmp(T_R.count,counts{c}) & T_R.Lstrike; 
+    e2 = strcmp(T_R.count,counts{c}) & ~T_R.Lstrike;
 
     p = runProb(y(e1),X(e1,:),y(e2),X(e2,:));
     drawProb(p,-0.4,0.4,['Lstrike_',counts{c}]);
 end
 
 % home vs. away
-e1 = T.bottomhalf == 1; e2 = T.bottomhalf == 0;
+e1 = T_R.bottomhalf == 1; e2 = T_R.bottomhalf == 0;
 p = runProb(y(e1),X(e1,:),y(e2),X(e2,:)); drawProb(p,-0.4,0.4,'home')
 
 % ahead vs. behind
-e1 = T.pahead == 1; e2 = T.bahead == 1;
+e1 = T_R.pahead == 1; e2 = T_R.bahead == 1;
 p = runProb(y(e1),X(e1,:),y(e2),X(e2,:)); drawProb(p,-0.4,0.4,'ahead')
 
-%% plots by batter handedness
+% all-star batters
+e1 = T_R.bat_as == 1; e2 = T_R.bat_as == 0;
+p = runProb(y(e1),X(e1,:),y(e2),X(e2,:)); drawProb(p,-0.4,0.4,'bat_as')
+
+% all-star pitchers
+e1 = T_R.pit_as == 1; e2 = T_R.pit_as == 0;
+p = runProb(y(e1),X(e1,:),y(e2),X(e2,:)); drawProb(p,-0.4,0.4,'pit_as')
+
+%% descriptive plots of enforced strike zone
 
 D = {T(T.batsR == 1,:), T(T.batsR == 0,:)}; clear T
 
@@ -63,26 +71,25 @@ for h=1:2
     legend({'3-0','0-0','0-2'},'Interpreter','latex', ...
         'box','off','Location','NorthEast','FontSize',20);
     saveFigure(['enforced_',s.hands{h}],[],[],'zoom')
-    
-    % priors and enforced strike zone by year
-    bw = [0 0];
-    for n=1:7
-        bw = max(bw,s.h(X{h}(e0 & D{h}.year == 2008 + n,:)));
+end
+
+% rational expectations by year
+for h=1:2
+    for c=1:s.N_c
+        bw = [0 0];
+        for n=1:7
+            year = 2008 + n;
+            e = strcmp(D{h}.count,s.count{c}) & D{h}.year == year;
+            bw = max(bw, s.h(X{h}(e,:)));
+        end
+        
+        for n=1:7
+            year = 2008 + n;
+            e = strcmp(D{h}.count,s.count{c}) & D{h}.year == year;
+            drawDens(runDens(X{h}(e,:),bw), ...
+                ['CD',s.count{c},'_',num2str(year),s.hands{h}])
+        end
     end
-    
-    M = zeros(s.pts^2,7);
-    for n=1:7
-        year = 2008 + n; e = e0 & D{h}.year == year;
-        drawDens(runDens(X{h}(e,:),bw),['CD',num2str(year),s.hands{h}])
-        M(:,n) = runSVM(y{h}(e),X{h}(e,:));
-    end
-    
-    clf, hold on
-    for n=1:7
-        contour(s.dim,s.dim,reshape(M(:,n),[s.pts,s.pts]), ...
-            [0 0],'-k','LineWidth',1.5)
-    end
-    saveFigure(['00',s.hands{h},'_year'],[],[],'zoom')
 end
 
 %% coefficient plots

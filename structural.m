@@ -30,50 +30,31 @@ for j=1:3
     end
 end
 
-%% by batter handedness
+%% priors and strike zones
 
-x = zeros(s.N_c,2,3); e = zeros(2,2,3);
 for h=1:2
+    % implied strike zone
+    box1 = [-b(2,h,3); -b(2,h,3); b(1,h,3); b(1,h,3); -b(2,h,3)];
+    box2 = [-b(4,h,3); b(3,h,3); b(3,h,3); -b(4,h,3); -b(4,h,3)];
+    
     for c=1:s.N_c
-        % enforced and predicted strike zone
+        z = reshape(H{h}.RE_S(:,c), [s.pts, s.pts]);
+        high = max(max(z)); ivl = ceil(high*1e3)/4e3;
+        
         clf, hold on
+        contour(s.dim,s.dim,z,ivl/10:ivl/10:high);
+        [cnt,hdl] = contour(s.dim,s.dim,z,ivl:ivl:high,'LineWidth',2);
+        clabel(cnt,hdl,'FontSize',20,'Interpreter','latex')
+        caxis([0 high]), colormap(parula)
         contour(s.dim,s.dim,reshape(H{h}.enforced(:,c),[s.pts,s.pts]), ...
             [0 0],'k','LineWidth',2)
-        contour(s.dim,s.dim,reshape(predicted(:,c,b_i),[s.pts,s.pts]),[0 0], ...
+        contour(s.dim,s.dim,reshape(predicted(:,c,h,3),[s.pts,s.pts]),[0 0], ...
             '--k','LineWidth',2)
-        saveFigure([s.count{c},s.hands{h},num2str(j)],box1,box2,'zoom')
+        saveFigure([s.count{c},s.hands{h}], box1, box2, 'zoom')
 
         % call density
-        drawDens(H{h}.RE_S(:,c),['CD_',s.count{c},s.hands{h}])
+        %drawDens(H{h}.RE_S(:,c),['CD_',s.count{c},s.hands{h}])
     end
-    
-    % ball and strike counts for predicted probabilities
-    col = [1 3 10];
-    N_s = cell(3,1); N_b = cell(3,1); y = cell(3,1); X = cell(3,1);
-    for n=1:3
-        N_s{n} = round(100 * p(:,col(n)) .* H{h}.calls(:,col(n)));
-        N_b{n} = round(100 * (1-p(:,col(n))) .* H{h}.calls(:,col(n)));
-        y{n} = [ones(sum(N_s{n}),1); zeros(sum(N_b{n}),1)];
-        X{n} = double([repelem(s.gridPts,N_s{n},1); ...
-            repelem(s.gridPts,N_b{n},1)]);
-    end
-    
-    % predicted probability in 0-0 count
-    drawProb(runProb(y{1},X{1}),0,1,['pstrike_00',s.hands{h},'_hat'])
-
-    % probability difference between 3-0 and 0-2
-    drawProb(runProb(y{3},X{3},y{2},X{2}),0,0.4,['pdiff',s.hands{h},'_hat'])
-end
-
-%% error rates and pitches inside zone
-
-N_C = (H{1}.calls + H{2}.calls); p0 = (H{1}.strikes + H{2}.strikes) ./ N_C;
-error = (e(:,:,1) * sum(H{1}.N) + e(:,:,2) * sum(H{2}.N)) / sum(sum(N_C)); 
-for j=1:3
-    fprintf('\tError under official zone: %1.3f [%1.3f]\n', ...
-        error(1,j),s.error(p0,s.Z_off,N_C))
-    fprintf('\tError under implied zone: %1.3f [%1.3f]\n', ...
-        error(2,j),s.error(p0,Z,N_C))
 end
 
 %% size of enforced and predicted strike zone by count
@@ -98,6 +79,13 @@ for j=1:3
     
     fprintf('Model %d R-squared: %1.2f\n',j, ...
         1 - sum((y-x(:,j)).^2) / sum((y-mean(y)).^2))
+end
+
+%% area of disagreement
+
+for j=1:3
+   fprintf('Prior %d area of disagreement is %2.0f square inches\n', ...
+       j, minL(j))
 end
 
 %% standard errors from approximate Hessian

@@ -28,31 +28,31 @@ cov_hat = [diag(cov(ind,:,1)) diag(cov(ind,:,2))];
 
 pool = parpool(s.num_workers);
 
-x = zeros(s.N_c,2,3); e = zeros(2,2,3); box = zeros(5,2,2,'int8');
+x = zeros(s.N_c,2,3); error = zeros(2,2,3); 
+b = zeros(4,2,3); predicted = zeros(s.pts^2,s.N_c,2,3);
 for h=1:2
     N_S = H{h}.calls;
     for j=1:3
-        [~,b_i,y_hat,predicted,p] = ...
+        [~,b_i,y_hat,pred_i,p] = ...
             getLoss(S_hat(j,:), cov_hat(j,h), ...
                 priors{j}{h}, H{h}, s.Z{h}, s.num_workers);
-
+    
         x(:,h,j) = sum(y_hat(:,:,b_i));
         
-        b = s.bounds{h}(b_i,:); p = p(:,:,b_i); Z = s.Z{h}(:,b_i);
-        e(:,j,h) = [s.error(p,s.Z_off,N_S); s.error(p,Z,N_S)];
+        b(:,h,j) = s.bounds{h}(b_i,:); p = p(:,:,b_i); Z = s.Z{h}(:,b_i);
+        
+        error(:,h,j) = [s.error(p,s.Z_off,N_S); s.error(p,Z,N_S)];
+        predicted(:,:,h,j) = pred_i(:,:,b_i);
         
         fprintf('%sHB model %d: [%d %d %d %d]\n', ...
-            s.hands{h},j,b(1),b(2),b(3),b(4))
+            s.hands{h},j,b(1,h,j),b(2,h,j),b(3,h,j),b(4,h,j))
         mvnradius(S_hat(j,:),cov_hat(j,h))
     end
-
-    % implied strike zone with count-specific prior
-    box(:,1,h) = [-b(2); -b(2); b(1); b(1); -b(2)];
-    box(:,2,h) = [-b(4); b(3); b(3); -b(4); -b(4)];
 end
 
 delete(pool)
 
 %% save
 
-save('../data/structural', 'S_hat', 'cov_hat', 'x', 'e', 'box', 'M')
+save('../data/structural', ...
+    'minL', 'S_hat', 'cov_hat', 'x', 'error', 'b', 'M', 'predicted')
