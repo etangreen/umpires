@@ -1,12 +1,12 @@
 Guide to replication files for "Bayesian Instinct".
 
 To cite the paper or the code:
->@article{green2018bayesian,
->  title={Bayesian instinct},
->  author={Green, Etan and Daniels, David},
->  journal={Available at SSRN 2916929},
->  year={2021}
->}
+  @article{green2021bayesian,
+    title={Bayesian instinct},
+    author={Green, Etan and Daniels, David},
+    journal={Available at SSRN 2916929},
+    year={2021}
+  }
 
 ## First:
 1. Create a master directory (e.g., `umpires/`).
