@@ -1,4 +1,4 @@
-Guide to replication files for ["Bayesian Instinct"](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2916929).
+Guide to replication files for [Bayesian Instinct](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2916929).
 
 ## First:
 1. Create a master directory (e.g., `umpires/`).
