@@ -1,9 +1,17 @@
-Guide to replication files for *Bayesian Instinct*. 
+Guide to replication files for "Bayesian Instinct".
+
+To cite the paper or the code:
+@article{green2018bayesian,
+  title={Bayesian instinct},
+  author={Green, Etan and Daniels, David},
+  journal={Available at SSRN 2916929},
+  year={2018}
+}
 
 ## First:
 1. Create a master directory (e.g., `umpires/`).
 2. Clone this repository in the master directory and call it `repo` (i.e., `umpires/repo/`).
-3. Download the data directory from https://www.dropbox.com/s/gy27l0nt1nsemov/data.zip?dl=0 into the master directory.
+3. Download the [data](https://www.dropbox.com/s/gy27l0nt1nsemov/data.zip?dl=0] and unzip it into the master directory.
 4. Run `prelim.m` to estimate the priors and enforced strike zone.
 
 ## Section 3: Stylized facts
